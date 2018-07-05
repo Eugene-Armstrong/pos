@@ -30,9 +30,9 @@ describe('pos', () => {
 
     // expect(console.log).toHaveBeenCalledWith(expectText);
     expect(result).toEqual([
-      {barcode: "ITEM000001",count: 5},
-      {barcode: "ITEM000003",count: 2.5},
-      {barcode: "ITEM000005",count: 3}
+      {barcode: 'ITEM000001',name:'雪碧',unit:'瓶',price:3.00,count:5},
+      {barcode: 'ITEM000003',name:'荔枝',unit:'斤',price:15.00,count: 2.5},
+      {barcode: 'ITEM000005',name:'方便面',unit:'袋',price:4.50,count: 3}
     ])
   });
 });
