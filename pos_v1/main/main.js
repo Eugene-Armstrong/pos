@@ -10,11 +10,10 @@ function printReceipt(tags) {
 
   // 2 比对并整合所买商品的信息
 	var eiInfo = EachItemInfo(eiCount,allItemsInfo);
-  return eiInfo;
 
   // 3 计算出优惠前的原总价
   const sumPrice = OriginalSumPrice(eiInfo);
-  // alert(sumPrice);
+  // return sumPrice;
 
   // 4 计算出优惠后的商品信息
   const discItems = DiscountSumPrice(eiInfo,discItemsCode);
