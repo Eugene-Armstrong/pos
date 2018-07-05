@@ -7,6 +7,7 @@ function printReceipt(tags) {
 
   // 1 计算出所买商品的个数
 	const eiCount = EachItemCount(tags);
+  return eiCount;
 
   // 2 比对并整合所买商品的信息
 	var eiInfo = EachItemInfo(eiCount,allItemsInfo);
