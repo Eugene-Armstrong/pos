@@ -18,13 +18,24 @@ function printReceipt(tags) {
   // 4 计算出优惠后的商品信息
   const discItems = DiscountSumPrice(eiInfo,discItemsCode);
 
+  // 5 打印收据
+  print(eiInfo,discItems,sumPrice);
+}
+
+/**
+ * 打印收据
+ * @param  {[type]} eiInfo    [所买商品的信息]
+ * @param  {[type]} discItems [优惠后的商品信息]
+ * @param  {[type]} sumPrice  [优惠前的原总价]
+ */
+function print(eiInfo,discItems,sumPrice){
   var receipt = "***<没钱赚商店>收据***\n";
   for(var i=0;i<eiInfo.length;i++){
     receipt += "名称："+eiInfo[i].name+"，数量："+eiInfo[i].count+eiInfo[i].unit+
       "，单价："+eiInfo[i].price.toFixed(2)+"(元)，小计："+eiInfo[i].sum.toFixed(2)+"(元)\n";
   }
 
-  // 5 计算差价
+  // 计算差价
   const discSumP = DiscSumPrice(discItems).toFixed(2);
   const save = (sumPrice.toFixed(2) - discSumP).toFixed(2);
 
@@ -33,7 +44,7 @@ function printReceipt(tags) {
     "节省："+save+"(元)\n" +
     "**********************";
 
-  // 6 打印收据
+  // 打印收据
   console.log(receipt);
 }
 
