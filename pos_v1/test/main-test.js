@@ -59,3 +59,30 @@ describe('Unit test', () => {
   });
 });
 
+describe('Unit test', () => {
+
+  it('2 - Compare and get the information of products', () => {
+
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ];
+
+    let eiInfo = EachItemCount(tags);
+    const allItemsInfo = loadAllItems(); // 所有商品信息
+
+    const expectResult = JSON.stringify(EachItemInfo(eiInfo,allItemsInfo));
+    const actualResult = JSON.stringify([
+      {"barcode":"ITEM000001","name":"雪碧","unit":"瓶","price":3,"count":5},
+      {"barcode":"ITEM000003","name":"荔枝","unit":"斤","price":15,"count":2.5},
+      {"barcode":"ITEM000005","name":"方便面","unit":"袋","price":4.5,"count":3}
+    ]);
+    expect(expectResult).toBe(actualResult);
+  });
+});
