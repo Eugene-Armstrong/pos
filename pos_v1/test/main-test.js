@@ -110,3 +110,32 @@ describe('Unit test', () => {
     expect(expectResult).toBe(actualResult);
   });
 });
+
+describe('Unit test', () => {
+
+  it('4 - Get the information of products in discount ', () => {
+
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ];
+
+    let eiCount = EachItemCount(tags);
+    const allItemsInfo = loadAllItems(); // 所有商品信息
+    var eiInfo = EachItemInfo(eiCount,allItemsInfo);
+    const discItemsCode = loadPromotions(); // 优惠商品条形码
+    const expectResult = JSON.stringify(DiscountSumPrice(eiInfo,discItemsCode));;
+    const actualResult = JSON.stringify([
+      { barcode: 'ITEM000001', name: '雪碧', unit: '瓶', price: 3, count: 5, sum: 12 },
+      { barcode: 'ITEM000003', name: '荔枝', unit: '斤', price: 15, count: 2.5, sum: 37.5 },
+      { barcode: 'ITEM000005', name: '方便面', unit: '袋', price: 4.5, count: 3, sum: 9 }
+    ]);
+    expect(expectResult).toBe(actualResult);
+  });
+});
