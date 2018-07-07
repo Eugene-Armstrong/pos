@@ -1,7 +1,4 @@
 'use strict';
-// function caclRemaindar() {};
-// function caclSum() {};
-// function caclSumInConditon() {};
 
 const {loadAllItems,loadPromotions} = require('../spec/fixtures');
 const allItemsInfo = loadAllItems(); // 所有商品信息
@@ -38,16 +35,13 @@ function print(eiInfo, discItems, sumPrice) {
         receipt += "名称：" + eachItemObj.name + "，数量：" + eachItemObj.count + eachItemObj.unit +
             "，单价：" + eachItemObj.price.toFixed(2) + "(元)，小计：" + eachItemObj.sum.toFixed(2) + "(元)\n";
     }
-
     // 计算差价
     const discSumP = calculateDiscSumPrice(discItems).toFixed(2);
     const save = (sumPrice.toFixed(2) - discSumP).toFixed(2);
-
     receipt += "----------------------\n" +
         "总计：" + discSumP + "(元)\n" +
         "节省：" + save + "(元)\n" +
         "**********************";
-
     // 打印收据
     console.log(receipt);
 }
@@ -132,12 +126,17 @@ function getEachItemInfo(eiCount, allItemsInfo) {
  * @param  tags [所买商品条形码]
  */
 function calculateEachItemCount(tags) {
-    //格式化代码
+    //格式化
     let formattedBarcodes = buildFormattedBarcodes(tags);
+    //
     let result = buildCartItems(formattedBarcodes);
     return result;
 }
 
+/**
+ * 格式化条形码
+ * @param {已买商品条形码} tags 
+ */
 function buildFormattedBarcodes(tags) {
     let formattedBarcodes = [];
     for (let tag of tags) {
@@ -154,13 +153,15 @@ function buildFormattedBarcodes(tags) {
         }
         formattedBarcodes.push(barcodeObject);
     }
-    // console.info(formattedBarcodes);
     return formattedBarcodes;
 }
 
+/**
+ * 获取购物车商品信息
+ * @param {已格式化条形码} formattedBarcodes 
+ */
 function buildCartItems(formattedBarcodes) {
     let cartItems = [];
-
     for (let formattedBarcode of formattedBarcodes) {
         let existCartItem = null;
         for (let cartItem of cartItems) {
@@ -174,8 +175,6 @@ function buildCartItems(formattedBarcodes) {
             cartItems.push(formattedBarcode);
         }
     }
-
-    // console.info(cartItems);
     return cartItems;
 }
 
@@ -186,7 +185,4 @@ module.exports = {
     calculateSumPrice,
     calculateDiscSumPriceAndGetInfo,
     print
-    // caclRemaindar,
-    // caclSum,
-    // caclSumInConditon
 }
