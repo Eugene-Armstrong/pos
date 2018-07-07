@@ -128,7 +128,7 @@ function getEachItemInfo(eiCount, allItemsInfo) {
 function calculateEachItemCount(tags) {
     //格式化
     let formattedBarcodes = buildFormattedBarcodes(tags);
-    //
+    //获取购物车商品信息并计算商品数量
     let result = buildCartItems(formattedBarcodes);
     return result;
 }
@@ -157,7 +157,7 @@ function buildFormattedBarcodes(tags) {
 }
 
 /**
- * 获取购物车商品信息
+ * 获取购物车商品信息并计算商品数量
  * @param {已格式化条形码} formattedBarcodes 
  */
 function buildCartItems(formattedBarcodes) {
