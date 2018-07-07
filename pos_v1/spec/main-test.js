@@ -1,5 +1,5 @@
 'use strict';
-
+const main = require('../main/main');
 describe('Unit test', () => {
 
   it('1 - Calculate the count of products', () => {
