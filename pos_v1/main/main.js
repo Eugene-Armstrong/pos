@@ -6,17 +6,17 @@ const discItemsCode = loadPromotions(); // 优惠商品条形码
 function printReceipt(tags) {
 
   // 1 计算出所买商品的个数
-	const eiCount = EachItemCount(tags);
+	const eiCount = calculateEachItemCount(tags);
 
   // 2 比对并整合所买商品的信息
-	var eiInfo = EachItemInfo(eiCount,allItemsInfo);
+	let eiInfo = getEachItemInfo(eiCount,allItemsInfo);
 
   // 3 计算出优惠前的原总价
-  const sumPrice = OriginalSumPrice(eiInfo);
+  const sumPrice = calculateOriginalSumPrice(eiInfo);
   // return sumPrice;
 
   // 4 计算出优惠后的商品信息
-  const discItems = DiscountSumPrice(eiInfo,discItemsCode);
+  const discItems = calculateDiscountSumPrice(eiInfo,discItemsCode);
 
   // 5 打印收据
   print(eiInfo,discItems,sumPrice);
@@ -29,14 +29,14 @@ function printReceipt(tags) {
  * @param  {[type]} sumPrice  [优惠前的原总价]
  */
 function print(eiInfo,discItems,sumPrice){
-  var receipt = "***<没钱赚商店>收据***\n";
-  for(var i=0;i<eiInfo.length;i++){
-    receipt += "名称："+eiInfo[i].name+"，数量："+eiInfo[i].count+eiInfo[i].unit+
-      "，单价："+eiInfo[i].price.toFixed(2)+"(元)，小计："+eiInfo[i].sum.toFixed(2)+"(元)\n";
+  let receipt = "***<没钱赚商店>收据***\n";
+  for(let eachItemObj of eiInfo){
+    receipt += "名称："+eachItemObj.name+"，数量："+eachItemObj.count+eachItemObj.unit+
+      "，单价："+eachItemObj.price.toFixed(2)+"(元)，小计："+eachItemObj.sum.toFixed(2)+"(元)\n";
   }
 
   // 计算差价
-  const discSumP = DiscSumPrice(discItems).toFixed(2);
+  const discSumP = calculateDiscSumPrice(discItems).toFixed(2);
   const save = (sumPrice.toFixed(2) - discSumP).toFixed(2);
 
   receipt += "----------------------\n" +
@@ -55,20 +55,19 @@ function print(eiInfo,discItems,sumPrice){
  * @returns {number}
  * @constructor
  */
-function DiscountSumPrice(eiInfo,discItemsCode) {
-  for(var i=0;i<eiInfo.length;i++){
-    var tmp = eiInfo[i];
-    var c = tmp.count;
-    var chk = false;
-    for(var j=0;j<discItemsCode[0].barcodes.length && chk === false;j++){
-      if(discItemsCode[0].barcodes[j] === tmp.barcode){
-        chk = true;
+function calculateDiscountSumPrice(eiInfo,discItemsCode) {
+  for(let eachItemObj of eiInfo){
+    let c = eachItemObj.count;
+    let chk = false;
+    for(let j=0;j<discItemsCode[0].barcodes.length && !chk;j++){
+      if(discItemsCode[0].barcodes[j] === eachItemObj.barcode){
+        chk = true;break;
       }
     }
-    if(tmp.count > 2 && chk){
-      c = tmp.count -1;
+    if(chk){
+      c = eachItemObj.count-Math.floor(eachItemObj.count/3);
     }
-    eiInfo[i].sum = tmp.price*c;
+    eachItemObj.sum = eachItemObj.price*c;
   }
   return eiInfo;
 }
@@ -79,10 +78,10 @@ function DiscountSumPrice(eiInfo,discItemsCode) {
  * @returns {number}
  * @constructor
  */
-function DiscSumPrice(eiInfo) {
-  var discPrice = 0;
-  for(var i=0; i<eiInfo.length; i++){
-    discPrice += eiInfo[i].sum;
+function calculateDiscSumPrice(eiInfo) {
+  let discPrice = 0;
+  for(let eachItemObj of eiInfo){
+    discPrice += eachItemObj.sum;
   }
   return discPrice;
 }
@@ -93,10 +92,10 @@ function DiscSumPrice(eiInfo) {
  * @returns {number}
  * @constructor
  */
-function OriginalSumPrice(eiInfo) {
-  var sumPrice = 0;
-  for(var i=0; i<eiInfo.length; i++){
-    sumPrice += eiInfo[i].count * eiInfo[i].price;
+function calculateOriginalSumPrice(eiInfo) {
+  let sumPrice = 0;
+  for(let eachItemObj of eiInfo){
+    sumPrice += eachItemObj.count * eachItemObj.price;
   }
   return sumPrice;
 }
@@ -106,18 +105,17 @@ function OriginalSumPrice(eiInfo) {
  * @param {[Array]} eiCount      [所买商品个数]
  * @param {[Array]} allItemsInfo [所有商品信息]
  */
-function EachItemInfo(eiCount,allItemsInfo) {
-	var result = [];
-	for(var i=0;i<allItemsInfo.length;i++){
-    for(var j=0;j<eiCount.length;j++){
-      var tmp = allItemsInfo[i];
-      if(eiCount[j].barcode === tmp.barcode){
+function getEachItemInfo(eiCount,allItemsInfo) {
+  let result = [];
+	for(let allItemsObj of allItemsInfo){
+    for(let eachItemObj of eiCount){
+      if(eachItemObj.barcode === allItemsObj.barcode){
         result.push({
-          barcode:tmp.barcode,
-          name:tmp.name,
-          unit:tmp.unit,
-          price:tmp.price,
-          count:eiCount[j].count
+          barcode:allItemsObj.barcode,
+          name:allItemsObj.name,
+          unit:allItemsObj.unit,
+          price:allItemsObj.price,
+          count:eachItemObj.count
         });
       }
     }
@@ -129,33 +127,50 @@ function EachItemInfo(eiCount,allItemsInfo) {
  * 计算所买每种商品的个数
  * @param {[Array]} tags [所买商品条形码]
  */
-function EachItemCount(tags) {
-	var arr = [];
-	var ck = true;
-	for (var i = 0; i < tags.length; i++) {
-		var num = 0;
-		for (var j = i; j < tags.length; j++) {
-			if (tags[i] === tags[j]) {
-				num++;
-			}
-		}
-		var tmpStr = tags[i].toString();
-		if(tmpStr.length>10){
-			ck = false;
-			tags[i] = tmpStr.substr(0,10);
-			num = parseFloat(tmpStr.split("-")[1]);
-		}
-		if(i===tags.length-1){
-			num++;
-		}
-		arr.push({
-			barcode: tags[i],
-			count: num
-		});
-		if(ck){
-			i+=num-1;
-		}
-	}
-	arr.splice(2,1);
-	return arr;
+function calculateEachItemCount(tags) {
+  //格式化代码
+	let formattedBarcodes = buildFormattedBarcodes(tags);
+	let result = buildCartItems(formattedBarcodes);
+	return result;
+}
+
+function buildFormattedBarcodes(tags){
+    let formattedBarcodes = [];
+    for (let tag of tags) {
+        let barcodeObject = {
+            barcode: tag,
+            count: 1
+        }
+        if (tag.indexOf("-") !== -1) {
+            let tempArray = tag.split("-");
+            barcodeObject = {
+                barcode: tempArray[0],
+                count: parseFloat(tempArray[1])
+            }
+        }
+        formattedBarcodes.push(barcodeObject);
+    }
+    console.info(formattedBarcodes);
+    return formattedBarcodes;
+}
+
+function buildCartItems(formattedBarcodes){
+    let cartItems = [];
+
+    for (let formattedBarcode of formattedBarcodes) {
+        let existCartItem = null;
+        for (let cartItem of cartItems) {
+            if (cartItem.barcode === formattedBarcode.barcode) {
+                existCartItem = cartItem;
+            }
+        }
+        if (existCartItem != null) {
+            existCartItem.count += formattedBarcode.count;
+        } else {
+            cartItems.push({ ...formattedBarcode });
+        }
+    }
+
+    console.info(cartItems);
+    return cartItems;
 }

@@ -17,7 +17,7 @@ describe('Unit test', () => {
 
     // spyOn(console, 'log');
 
-    const expectResult = JSON.stringify(EachItemCount(tags));
+    const expectResult = JSON.stringify(calculateEachItemCount(tags));
     const actualResult = JSON.stringify([
       {barcode: 'ITEM000001',count: 5},
       {barcode: 'ITEM000003',count: 2.5},
@@ -42,10 +42,10 @@ describe('Unit test', () => {
       'ITEM000005-2',
     ];
 
-    let eiCount = EachItemCount(tags);
+    let eiCount = calculateEachItemCount(tags);
     const allItemsInfo = loadAllItems(); // 所有商品信息
 
-    const expectResult = JSON.stringify(EachItemInfo(eiCount,allItemsInfo));
+    const expectResult = JSON.stringify(getEachItemInfo(eiCount,allItemsInfo));
     const actualResult = JSON.stringify([
       {"barcode":"ITEM000001","name":"雪碧","unit":"瓶","price":3,"count":5},
       {"barcode":"ITEM000003","name":"荔枝","unit":"斤","price":15,"count":2.5},
@@ -70,10 +70,10 @@ describe('Unit test', () => {
       'ITEM000005-2',
     ];
 
-    let eiCount = EachItemCount(tags);
+    let eiCount = calculateEachItemCount(tags);
     const allItemsInfo = loadAllItems(); // 所有商品信息
-    var eiInfo = EachItemInfo(eiCount,allItemsInfo);
-    const expectResult = OriginalSumPrice(eiInfo);
+    let eiInfo = getEachItemInfo(eiCount,allItemsInfo);
+    const expectResult = calculateOriginalSumPrice(eiInfo);
     const actualResult = 66;
     expect(expectResult).toBe(actualResult);
   });
@@ -94,11 +94,11 @@ describe('Unit test', () => {
       'ITEM000005-2',
     ];
 
-    let eiCount = EachItemCount(tags);
+    let eiCount = calculateEachItemCount(tags);
     const allItemsInfo = loadAllItems(); // 所有商品信息
-    var eiInfo = EachItemInfo(eiCount,allItemsInfo);
+    let eiInfo = getEachItemInfo(eiCount,allItemsInfo);
     const discItemsCode = loadPromotions(); // 优惠商品条形码
-    const expectResult = JSON.stringify(DiscountSumPrice(eiInfo,discItemsCode));;
+    const expectResult = JSON.stringify(calculateDiscountSumPrice(eiInfo,discItemsCode));;
     const actualResult = JSON.stringify([
       { barcode: 'ITEM000001', name: '雪碧', unit: '瓶', price: 3, count: 5, sum: 12 },
       { barcode: 'ITEM000003', name: '荔枝', unit: '斤', price: 15, count: 2.5, sum: 37.5 },
